@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { promises as fs } from 'fs';
-import path from 'path';
-import { Flight } from '@/types/flight';
+import { getFlights } from '@/services/getFlights';
 
 const SORT_TYPE = {
   PRICE: 'price',
@@ -19,8 +17,7 @@ export async function GET(req: NextRequest) {
   const maxDuration = parseInt(searchParams.get('maxDuration') || '');
   const sort = searchParams.get('sort') as SORT_TYPE;
 
-  const filePath = path.join(process.cwd(), 'public', 'flights.json');
-  const flights: Flight[] = JSON.parse(await fs.readFile(filePath, 'utf8'));
+  const flights = await getFlights();
 
   const { priceRange, durationRange } = flights.reduce(
     (acc, flight) => {
