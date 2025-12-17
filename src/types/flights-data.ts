@@ -14,7 +14,6 @@ export interface FlightsData {
     };
   };
   sortOptions: {
-    label: string;
-    value: string;
-  }[];
+    [key: string]: string;
+  };
 }

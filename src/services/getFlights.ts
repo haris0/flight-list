@@ -40,16 +40,10 @@ export const getFlights = async (): Promise<FlightsData> => {
     ).values()
   )
 
-  const sortOptions = [
-    {
-      label: 'Lowest Price',
-      value: SORT_TYPE.PRICE,
-    },
-    {
-      label: 'Shortest Duration',
-      value: SORT_TYPE.DURATION,
-    }
-  ];
+  const sortOptions = {
+    [SORT_TYPE.PRICE]: 'Lowest Price',
+    [SORT_TYPE.DURATION]: 'Shortest Duration',
+  };
 
   return {
     flights,
