@@ -1,12 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
-import { getFlights } from '@/services/getFlights';
-
-const SORT_TYPE = {
-  PRICE: 'price',
-  DURATION: 'duration',
-} as const;
-
-type SORT_TYPE = typeof SORT_TYPE[keyof typeof SORT_TYPE];
+import { getFlights, SORT_TYPE } from '@/services/getFlights';
+import { FlightsData } from '@/types/flights-data';
 
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
@@ -15,35 +9,9 @@ export async function GET(req: NextRequest) {
   const maxPrice = parseInt(searchParams.get('maxPrice') || '');
   const minDuration = parseInt(searchParams.get('minDuration') || '');
   const maxDuration = parseInt(searchParams.get('maxDuration') || '');
-  const sort = searchParams.get('sort') as SORT_TYPE;
+  const sort = searchParams.get('sort');
 
-  const flights = await getFlights();
-
-  const { priceRange, durationRange } = flights.reduce(
-    (acc, flight) => {
-      if (flight.price.amount < acc.priceRange.min) acc.priceRange.min = flight.price.amount;
-      if (flight.price.amount > acc.priceRange.max) acc.priceRange.max = flight.price.amount;
-      if (flight.duration < acc.durationRange.min) acc.durationRange.min = flight.duration;
-      if (flight.duration > acc.durationRange.max) acc.durationRange.max = flight.duration;
-      return acc;
-    },
-    {
-      priceRange: {
-        min: flights.length > 0 ? flights[0].price.amount : 0,
-        max: flights.length > 0 ? flights[0].price.amount : 0,
-      },
-      durationRange: {
-        min: flights.length > 0 ? flights[0].duration : 0,
-        max: flights.length > 0 ? flights[0].duration : 0,
-      },
-    }
-  );
-
-  const airlines =  Array.from(
-    new Map(
-      flights.map(flight => [flight.airline.code, flight.airline])
-    ).values()
-  )
+  const { flights, filterAttributes, sortOptions } = await getFlights();
 
   const processedFlights = flights.filter((flight) => {
     if (airlineCode && flight.airline.code !== airlineCode) return false;
@@ -66,24 +34,11 @@ export async function GET(req: NextRequest) {
     });
   }
 
-  return NextResponse.json({
+  return NextResponse.json<{ data: FlightsData}>({
     data: {
       flights: processedFlights,
-      filterAttributes: {
-        airlines,
-        priceRange,
-        durationRange,
-      },
-      sortOptions: [
-        {
-          label: 'Lowest Price',
-          value: SORT_TYPE.PRICE,
-        },
-        {
-          label: 'Shortest Duration',
-          value: SORT_TYPE.DURATION,
-        }
-      ],
+      filterAttributes,
+      sortOptions,
     }
   });
 }
