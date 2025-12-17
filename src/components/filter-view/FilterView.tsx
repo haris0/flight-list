@@ -1,8 +1,8 @@
-import DualRangeSlider from './dual-range-slider';
-import { formatToIDRCurrency } from '../utils/currency-format';
-import { minutesToHoursAndMinutes } from '../utils/time-format';
 import { FlightsData } from '@/types/flights-data';
 import { AIRLINE_LOGO_BASE_URL } from '@/constants';
+import { formatToIDRCurrency } from '@/utils/currency-format';
+import DualRangeSlider from '../dual-range-slider/DualRangeSlider';
+import { minutesToHoursAndMinutes } from '@/utils/time-format';
 
 interface FilterViewProps {
   filterAttributes: FlightsData['filterAttributes'];

@@ -1,8 +1,9 @@
 'use client';
 
-import BottomSheet from '@/components/bottom-sheet';
-import FilterView from '@/components/filter-view';
-import SortView from '@/components/sort-view';
+
+import BottomSheet from '@/components/bottom-sheet/BottomSheet';
+import FilterView from '@/components/filter-view/FilterView';
+import SortView from '@/components/sort-view/SortView';
 import { FlightsData } from '@/types/flights-data';
 import { useCallback, useState } from 'react';
 

@@ -1,7 +1,7 @@
 import { Suspense } from "react";
-import FlightListPage from "@/pages/flight-list";
 import { getFlights } from "@/services/getFlights";
-import Header from "@/components/header";
+import Header from "@/components/header/Header";
+import FlightListPage from "@/pages/flight-list/FlightList";
 
 const FlightList = async () => {
   const datas = await getFlights();
