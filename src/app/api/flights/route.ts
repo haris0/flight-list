@@ -3,6 +3,13 @@ import { promises as fs } from 'fs';
 import path from 'path';
 import { Flight } from '@/types/flight';
 
+const SORT_TYPE = {
+  PRICE: 'price',
+  DURATION: 'duration',
+} as const;
+
+type SORT_TYPE = typeof SORT_TYPE[keyof typeof SORT_TYPE];
+
 export async function GET(req: NextRequest) {
   const { searchParams } = new URL(req.url);
   const airlineCode = searchParams.get('airline');
@@ -10,31 +17,10 @@ export async function GET(req: NextRequest) {
   const maxPrice = parseInt(searchParams.get('maxPrice') || '');
   const minDuration = parseInt(searchParams.get('minDuration') || '');
   const maxDuration = parseInt(searchParams.get('maxDuration') || '');
-  const sort = searchParams.get('sort');
+  const sort = searchParams.get('sort') as SORT_TYPE;
 
   const filePath = path.join(process.cwd(), 'public', 'flights.json');
-  const originflights: Flight[] = JSON.parse(await fs.readFile(filePath, 'utf8'));
-
-  const flights = originflights.filter((flight) => {
-    if (airlineCode && flight.airline.code !== airlineCode) return false;
-    if (!isNaN(minPrice) && flight.price.amount <= minPrice) return false;
-    if (!isNaN(maxPrice) && flight.price.amount >= maxPrice) return false;
-    if (!isNaN(minDuration) && flight.duration <= minDuration) return false;
-    if (!isNaN(maxDuration) && flight.duration >= maxDuration) return false;
-    return true;
-  });
-
-  if (sort === 'price') {
-    flights.sort((a, b) => a.price.amount - b.price.amount);
-  } else if (sort === 'duration') {
-    flights.sort((a, b) => a.duration - b.duration);
-  } else {
-    // Default: prioritize price, then duration
-    flights.sort((a, b) => {
-      if (a.price.amount !== b.price.amount) return a.price.amount - b.price.amount;
-      return a.duration - b.duration;
-    });
-  }
+  const flights: Flight[] = JSON.parse(await fs.readFile(filePath, 'utf8'));
 
   const { priceRange, durationRange } = flights.reduce(
     (acc, flight) => {
@@ -56,27 +42,49 @@ export async function GET(req: NextRequest) {
     }
   );
 
+  const airlines =  Array.from(
+    new Map(
+      flights.map(flight => [flight.airline.code, flight.airline])
+    ).values()
+  )
+
+  const processedFlights = flights.filter((flight) => {
+    if (airlineCode && flight.airline.code !== airlineCode) return false;
+    if (!isNaN(minPrice) && flight.price.amount <= minPrice) return false;
+    if (!isNaN(maxPrice) && flight.price.amount >= maxPrice) return false;
+    if (!isNaN(minDuration) && flight.duration <= minDuration) return false;
+    if (!isNaN(maxDuration) && flight.duration >= maxDuration) return false;
+    return true;
+  });
+
+  if (sort === SORT_TYPE.PRICE) {
+    processedFlights.sort((a, b) => a.price.amount - b.price.amount);
+  } else if (sort === SORT_TYPE.DURATION) {
+    processedFlights.sort((a, b) => a.duration - b.duration);
+  } else {
+    // Default: prioritize price, then duration
+    processedFlights.sort((a, b) => {
+      if (a.price.amount !== b.price.amount) return a.price.amount - b.price.amount;
+      return a.duration - b.duration;
+    });
+  }
 
   return NextResponse.json({
     data: {
-      flights,
+      flights: processedFlights,
       filterAttributes: {
-        airlines: Array.from(
-          new Map(
-            originflights.map(flight => [flight.airline.code, flight.airline])
-          ).values()
-        ),
+        airlines,
         priceRange,
         durationRange,
       },
       sortOptions: [
         {
           label: 'Lowest Price',
-          value: 'price',
+          value: SORT_TYPE.PRICE,
         },
         {
           label: 'Shortest Duration',
-          value: 'duration',
+          value: SORT_TYPE.DURATION,
         }
       ],
     }
