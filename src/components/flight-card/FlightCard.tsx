@@ -1,22 +1,10 @@
-import { AIRLINE_LOGO_BASE_URL } from "@/constants";
+import { AIRLINE_LOGO_BASE_URL, DUMMY_AIRPORT_DATA } from "@/constants";
 import { Flight } from "@/types/flight";
 import { formatToIDRCurrency } from "@/utils/currency-format";
 import { formatDate, formatYear, minutesToHoursAndMinutes } from "@/utils/time-format";
-import { format } from "path";
 import { useCallback, useState } from "react";
 
 interface FlightCardProps extends Flight {}
-
-const DUMMY_AIRPORT_DATA: Record<string, { city: string; airportName: string }> = {
-  CGK: {
-    city: 'Jakarta',
-    airportName: 'Soekarno Hatta Intl',
-  },
-  DPS: {
-    city: 'Denpasar',
-    airportName: 'Bali Ngurah Rai',
-  }
-}
 
 const FlightCard = ({
   airline,
@@ -106,7 +94,7 @@ const FlightCard = ({
       {showDetail && (
         <div className="mt-4 border border-gray-300 rounded-lg text-sm text-gray-600">
           <div className="bg-gray-100 p-2 rounded-t-lg flex justify-between items-center">
-            <span>Flight Code: {flightNumber}</span>
+            <span>Flight Number: {flightNumber}</span>
             <span>Duration: {minutesToHoursAndMinutes(duration)}</span>
           </div>
           <div className="flex items-start gap-1.5 px-3 py-4">

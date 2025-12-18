@@ -14,3 +14,14 @@ export const SORT_TYPE = {
   PRICE: 'price',
   DURATION: 'duration',
 };
+
+export const DUMMY_AIRPORT_DATA: Record<string, { city: string; airportName: string }> = {
+  CGK: {
+    city: 'Jakarta',
+    airportName: 'Soekarno Hatta Intl',
+  },
+  DPS: {
+    city: 'Denpasar',
+    airportName: 'Bali Ngurah Rai',
+  }
+}

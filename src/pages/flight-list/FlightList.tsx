@@ -109,19 +109,17 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
 
   const handlePriceRangeChange = (type: 'min' | 'max', value: number) => {
     setPriceRange((prev) => ({ ...prev, [type]: value }));
-    handleUpdateSearch(type === 'max' ? 
-      QUERY_PARAM.MAX_PRICE : 
-      QUERY_PARAM.MIN_PRICE, 
-      String(priceRange[type])
+    handleUpdateSearch(
+      type === 'max' ? QUERY_PARAM.MAX_PRICE : QUERY_PARAM.MIN_PRICE,
+      String(value)
     );
   }
 
   const handleDurationRangeChange = (type: 'min' | 'max', value: number) => {
     setDurationRange((prev) => ({ ...prev, [type]: value }));
-    handleUpdateSearch(type === 'max' ? 
-      QUERY_PARAM.MAX_DURATION : 
-      QUERY_PARAM.MIN_DURATION, 
-      String(durationRange[type])
+    handleUpdateSearch(
+      type === 'max' ? QUERY_PARAM.MAX_DURATION : QUERY_PARAM.MIN_DURATION,
+      String(value)
     );
   }
 
