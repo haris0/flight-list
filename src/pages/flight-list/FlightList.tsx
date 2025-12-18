@@ -6,68 +6,150 @@ import FilterView from '@/components/filter-view/FilterView';
 import SortView from '@/components/sort-view/SortView';
 import { FlightsData } from '@/types/flights-data';
 import { useCallback, useState } from 'react';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useDebounce } from '@/hooks/useDebounce';
+
 
 interface FlightListPageProps {
   initialFlights: FlightsData
 }
 
+const QUERY_PARAM = {
+  AIRLINES: 'airlines',
+  MIN_PRICE: 'minPrice',
+  MAX_PRICE: 'maxPrice',
+  MIN_DURATION: 'minDuration',
+  MAX_DURATION: 'maxDuration',
+  SORT_BY: 'sortBy',
+};
+
 const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
   const { filterAttributes, sortOptions } = initialFlights;
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
 
-  const [airlines, setAirlines] = useState<string[]>([]);
-  const [priceRange, setPriceRange] = useState(filterAttributes.priceRange);
-  const [durationRange, setDurationRange] = useState(filterAttributes.durationRange);
+  const [airlines, setAirlines] = useState<string[]>(searchParams?.getAll(QUERY_PARAM.AIRLINES) || []);
+  const [priceRange, setPriceRange] = useState({
+    min: Number(searchParams?.get(QUERY_PARAM.MIN_PRICE)) || filterAttributes.priceRange.min,
+    max: Number(searchParams?.get(QUERY_PARAM.MAX_PRICE)) || filterAttributes.priceRange.max,
+  });
+  const [durationRange, setDurationRange] = useState({
+    min: Number(searchParams?.get(QUERY_PARAM.MIN_DURATION)) || filterAttributes.durationRange.min,
+    max: Number(searchParams?.get(QUERY_PARAM.MAX_DURATION)) || filterAttributes.durationRange.max,
+  });
   const [showSort, setShowSort] = useState(false);
-  const [selectedSortMode, setSelectedSortMode] = useState('');
+  const [selectedSortMode, setSelectedSortMode] = useState(searchParams?.get(QUERY_PARAM.SORT_BY) || '');
   const [showBottomSheet, setShowBottomSheet] = useState({
     filter: false,
     sort: false,
   });
 
+  const createQueryString = (key: string, value?: string | string[]) => {
+    const params = new URLSearchParams(searchParams?.toString());
+    if (Array.isArray(value)) {
+      params.delete(key);
+      value.forEach((v) => {
+        params.append(key, v);
+      });
+    } else if (value) {
+      params.set(key, value);
+    } else {
+      params.delete(key);
+    }
+
+    return params.toString();
+  };
+
+  const handleUpdateSearch = useDebounce((key: string, value?: string | string[]) => {
+    router.replace(`${pathname}?${createQueryString(key, value)}`);
+  });
+
+  const handleClearFiltersQuery = useDebounce(() => {
+    const params = new URLSearchParams(searchParams?.toString());
+    params.delete(QUERY_PARAM.AIRLINES);
+    params.delete(QUERY_PARAM.MIN_PRICE);
+    params.delete(QUERY_PARAM.MAX_PRICE);
+    params.delete(QUERY_PARAM.MIN_DURATION);
+    params.delete(QUERY_PARAM.MAX_DURATION);
+    router.replace(`${pathname}?${params.toString()}`);
+  })
+
   const handleSelectAllAirlines = () => {
+    if(airlines.length === filterAttributes.airlines.length) {
+      setAirlines([]);
+      handleUpdateSearch(QUERY_PARAM.AIRLINES, []);
+      return;
+    }
     const allAirlineCodes = filterAttributes.airlines.map((airline) => airline.code);
     setAirlines(allAirlineCodes);
+    handleUpdateSearch(QUERY_PARAM.AIRLINES, allAirlineCodes);
   }
 
   const handleCheckboxChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { value, checked } = event.target;
 
     if (checked) {
-      setAirlines((prevSelected) => [...prevSelected, value]);
+      setAirlines((prevSelected) => {
+        const updatedSelection = [...prevSelected, value];
+        handleUpdateSearch(QUERY_PARAM.AIRLINES, updatedSelection);
+        return updatedSelection;
+      });
     } else {
-      setAirlines((prevSelected) =>
-        prevSelected.filter((option) => option !== value)
-      );
+      setAirlines((prevSelected) => {
+        const updatedSelection = prevSelected.filter((option) => option !== value);
+        handleUpdateSearch(QUERY_PARAM.AIRLINES, updatedSelection);
+        return updatedSelection;
+      });
     }
   };
+
+  const handlePriceRangeChange = (type: 'min' | 'max', value: number) => {
+    setPriceRange((prev) => ({ ...prev, [type]: value }));
+    handleUpdateSearch(type === 'max' ? 
+      QUERY_PARAM.MAX_PRICE : 
+      QUERY_PARAM.MIN_PRICE, 
+      String(priceRange[type])
+    );
+  }
+
+  const handleDurationRangeChange = (type: 'min' | 'max', value: number) => {
+    setDurationRange((prev) => ({ ...prev, [type]: value }));
+    handleUpdateSearch(type === 'max' ? 
+      QUERY_PARAM.MAX_DURATION : 
+      QUERY_PARAM.MIN_DURATION, 
+      String(durationRange[type])
+    );
+  }
 
   const handleResetFilters = () => {
     setPriceRange(filterAttributes.priceRange);
     setDurationRange(filterAttributes.durationRange);
     setAirlines([]);
+    handleClearFiltersQuery();
   }
 
   const handeSortOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSelectedSortMode(event.target.value);
+    handleUpdateSearch(QUERY_PARAM.SORT_BY, event.target.value);
     setShowSort(false);
   }
 
   const renderFilterView = useCallback(
     () => (
       <FilterView
-          filterAttributes={filterAttributes}
-          airlines={airlines}
-          priceRange={priceRange}
-          durationRange={durationRange}
-          setAirlines={setAirlines}
-          setMinPrice={(value) => setPriceRange((prev) => ({ ...prev, min: value }))}
-          setMaxPrice={(value) => setPriceRange((prev) => ({ ...prev, max: value }))}
-          setMinDuration={(value) => setDurationRange((prev) => ({ ...prev, min: value }))}
-          setMaxDuration={(value) => setDurationRange((prev) => ({ ...prev, max: value }))}
-          onResetFilters={handleResetFilters}
-          onSelectAllAirlines={handleSelectAllAirlines}
-          onCheckAirline={handleCheckboxChange}
-        />
+        filterAttributes={filterAttributes}
+        airlines={airlines}
+        priceRange={priceRange}
+        durationRange={durationRange}
+        setMinPrice={(value) => handlePriceRangeChange('min', value)}
+        setMaxPrice={(value) => handlePriceRangeChange('max', value)}
+        setMinDuration={(value) => handleDurationRangeChange('min', value)}
+        setMaxDuration={(value) => handleDurationRangeChange('max', value)}
+        onResetFilters={handleResetFilters}
+        onSelectAllAirlines={handleSelectAllAirlines}
+        onCheckAirline={handleCheckboxChange}
+      />
     ),
     [
       filterAttributes,

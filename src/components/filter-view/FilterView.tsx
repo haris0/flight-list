@@ -15,7 +15,6 @@ interface FilterViewProps {
     min: number;
     max: number;
   };
-  setAirlines: (airlines: string[]) => void;
   setMinPrice: (min: number) => void;
   setMaxPrice: (max: number) => void;
   setMinDuration: (min: number) => void;
@@ -30,7 +29,6 @@ const FilterView = ({
   airlines,
   priceRange,
   durationRange,
-  setAirlines,
   setMinPrice,
   setMaxPrice,
   setMinDuration,
@@ -57,11 +55,7 @@ const FilterView = ({
           </span>
           <button
             className="text-orange-500 hover:text-orange-600 font-medium cursor-pointer"
-            onClick={
-              airlines.length === filterAttributes.airlines.length ? 
-                () => setAirlines([]) : 
-                onSelectAllAirlines
-            }
+            onClick={onSelectAllAirlines}
           >
             {airlines.length === filterAttributes.airlines.length ? 'Unselect All' : 'Select All'}
           </button>
