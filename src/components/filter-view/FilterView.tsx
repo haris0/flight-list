@@ -57,10 +57,10 @@ const FilterView = ({
             className="text-orange-500 hover:text-orange-600 font-medium cursor-pointer"
             onClick={onSelectAllAirlines}
           >
-            {airlines.length === filterAttributes.airlines.length ? 'Unselect All' : 'Select All'}
+            {airlines.length === filterAttributes?.airlines.length ? 'Unselect All' : 'Select All'}
           </button>
         </div>
-        {filterAttributes.airlines.map((airline) => (
+        {filterAttributes?.airlines.map((airline) => (
           <div key={airline.code} className="flex items-center gap-2 mt-2 justify-between">
             <div className='flex items-center gap-2'>
               <img 
@@ -95,8 +95,8 @@ const FilterView = ({
         </div>
         <div className="mt-4">
           <DualRangeSlider
-            min={filterAttributes.priceRange.min}
-            max={filterAttributes.priceRange.max}
+            min={filterAttributes?.priceRange.min}
+            max={filterAttributes?.priceRange.max}
             minValue={priceRange.min}
             maxValue={priceRange.max}
             setMinValue={setMinPrice}
@@ -116,8 +116,8 @@ const FilterView = ({
         </div>
         <div className="mt-4">
           <DualRangeSlider
-            min={filterAttributes.durationRange.min}
-            max={filterAttributes.durationRange.max}
+            min={filterAttributes?.durationRange.min}
+            max={filterAttributes?.durationRange.max}
             minValue={durationRange.min}
             maxValue={durationRange.max}
             setMinValue={setMinDuration}

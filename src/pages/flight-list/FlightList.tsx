@@ -22,7 +22,7 @@ const RECOMMENDED_SORT = {
 }
 
 const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
-  const { filterAttributes, sortOptions } = initialFlights;
+  const { filterAttributes, sortOptions } = initialFlights || {};
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
@@ -34,12 +34,12 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
 
   const [airlines, setAirlines] = useState<string[]>(searchParams?.getAll(QUERY_PARAM.AIRLINES) || []);
   const [priceRange, setPriceRange] = useState({
-    min: Number(searchParams?.get(QUERY_PARAM.MIN_PRICE)) || filterAttributes.priceRange.min,
-    max: Number(searchParams?.get(QUERY_PARAM.MAX_PRICE)) || filterAttributes.priceRange.max,
+    min: Number(searchParams?.get(QUERY_PARAM.MIN_PRICE)) || filterAttributes?.priceRange.min,
+    max: Number(searchParams?.get(QUERY_PARAM.MAX_PRICE)) || filterAttributes?.priceRange.max,
   });
   const [durationRange, setDurationRange] = useState({
-    min: Number(searchParams?.get(QUERY_PARAM.MIN_DURATION)) || filterAttributes.durationRange.min,
-    max: Number(searchParams?.get(QUERY_PARAM.MAX_DURATION)) || filterAttributes.durationRange.max,
+    min: Number(searchParams?.get(QUERY_PARAM.MIN_DURATION)) || filterAttributes?.durationRange.min,
+    max: Number(searchParams?.get(QUERY_PARAM.MAX_DURATION)) || filterAttributes?.durationRange.max,
   });
   const [showSort, setShowSort] = useState(false);
   const [selectedSortMode, setSelectedSortMode] = useState(searchParams?.get(QUERY_PARAM.SORT_BY) || SORT_TYPE.RECOMMENDED);
@@ -79,12 +79,12 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
   })
 
   const handleSelectAllAirlines = () => {
-    if(airlines.length === filterAttributes.airlines.length) {
+    if(airlines.length === filterAttributes?.airlines.length) {
       setAirlines([]);
       handleUpdateSearch(QUERY_PARAM.AIRLINES, []);
       return;
     }
-    const allAirlineCodes = filterAttributes.airlines.map((airline) => airline.code);
+    const allAirlineCodes = filterAttributes?.airlines.map((airline) => airline.code);
     setAirlines(allAirlineCodes);
     handleUpdateSearch(QUERY_PARAM.AIRLINES, allAirlineCodes);
   }
@@ -124,8 +124,8 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
   }
 
   const handleResetFilters = () => {
-    setPriceRange(filterAttributes.priceRange);
-    setDurationRange(filterAttributes.durationRange);
+    setPriceRange(filterAttributes?.priceRange);
+    setDurationRange(filterAttributes?.durationRange);
     setAirlines([]);
     handleClearFiltersQuery();
   }
@@ -187,10 +187,10 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
 
   const isFilterActive = 
     airlines.length > 0 ||
-    priceRange.min !== filterAttributes.priceRange.min ||
-    priceRange.max !== filterAttributes.priceRange.max ||
-    durationRange.min !== filterAttributes.durationRange.min ||
-    durationRange.max !== filterAttributes.durationRange.max;
+    priceRange.min !== filterAttributes?.priceRange.min ||
+    priceRange.max !== filterAttributes?.priceRange.max ||
+    durationRange.min !== filterAttributes?.durationRange.min ||
+    durationRange.max !== filterAttributes?.durationRange.max;
 
   return (
     <div className="md:flex md:flex-1 gap-4">

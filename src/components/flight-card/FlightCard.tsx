@@ -130,7 +130,7 @@ const FlightCard = ({
                   <div className="flex flex-1 items-center gap-2">
                     <img
                       alt="Lion Air" 
-                      src={`${AIRLINE_LOGO_BASE_URL}JT.png`}
+                      src={`${AIRLINE_LOGO_BASE_URL}${airline.code}.png`}
                       className='w-10 mr-1'
                     />
                     <div className="flex flex-1 flex-col items-start justify-center">
