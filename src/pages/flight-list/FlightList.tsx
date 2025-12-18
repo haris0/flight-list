@@ -10,6 +10,7 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useFlights } from '@/services/useFlights';
 import { QUERY_PARAM, SORT_TYPE } from '@/constants';
+import FlightCard from '@/components/flight-card/FlightCard';
 
 
 interface FlightListPageProps {
@@ -198,7 +199,7 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
       <aside className="hidden md:block w-82 p-4 sticky top-22 h-fit">
         {renderFilterView()}
       </aside>
-      <aside className="sticky md:hidden flex justify-around items-center w-full p-4 top-18 shadow-xs -mt-10 rounded-t-2xl bg-[#f3f4f6] z-20">
+      <aside className="sticky md:hidden flex justify-around items-center w-full p-4 top-18 shadow-xs -mt-10 rounded-t-2xl bg-gray-100 z-20">
         <button
           className={`flex gap-1 cursor-pointer ${isFilterActive && 'text-orange-500'}`}
           onClick={() => setShowBottomSheet((prev) => ({ ...prev, filter: true }))}
@@ -207,7 +208,7 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
           Filter
         </button>
         <button
-          className={`flex gap-1 cursor-pointer ${selectedSortMode && 'text-orange-500'}`}
+          className={`flex gap-1 cursor-pointer ${selectedSortMode !== SORT_TYPE.RECOMMENDED && 'text-orange-500'}`}
           onClick={() => setShowBottomSheet((prev) => ({ ...prev, sort: true }))}
         >
           <img src='/sort-icon.svg' width={20} height={20} alt="Filter Icon" />
@@ -232,13 +233,11 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
             )}
           </div>
         </div>
-        <ul className='mt-4'>
+        <div className='flex flex-col gap-3 mt-4'>
           {flightsData?.flights?.map((flight) => (
-            <li key={flight.id}>
-              {flight.airline.name} - {flight.flightNumber}
-            </li>
+            <FlightCard key={flight.id} {...flight} />
           ))}
-        </ul>
+        </div>
       </main>
       <BottomSheet 
         open={showBottomSheet.filter} 

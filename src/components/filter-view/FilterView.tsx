@@ -68,7 +68,7 @@ const FilterView = ({
                 alt={airline.name} 
                 className='w-6'
               />
-              <label htmlFor={`airline-${airline.code}`} className="cursor-pointer">
+              <label className="cursor-pointer">
                 {airline.name}
               </label>
             </div>
