@@ -8,26 +8,24 @@ import { FlightsData } from '@/types/flights-data';
 import { useCallback, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
+import { useFlights } from '@/services/useFlights';
+import { QUERY_PARAM } from '@/constants';
 
 
 interface FlightListPageProps {
   initialFlights: FlightsData
 }
 
-const QUERY_PARAM = {
-  AIRLINES: 'airlines',
-  MIN_PRICE: 'minPrice',
-  MAX_PRICE: 'maxPrice',
-  MIN_DURATION: 'minDuration',
-  MAX_DURATION: 'maxDuration',
-  SORT_BY: 'sortBy',
-};
-
 const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
   const { filterAttributes, sortOptions } = initialFlights;
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+  
+  const { flightsData } = useFlights({
+    params: searchParams?.toString() ? `?${searchParams.toString()}` : '',
+    initialData: initialFlights,
+  });
 
   const [airlines, setAirlines] = useState<string[]>(searchParams?.getAll(QUERY_PARAM.AIRLINES) || []);
   const [priceRange, setPriceRange] = useState({
@@ -223,7 +221,7 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
           </div>
         </div>
         <ul className='mt-4'>
-          {initialFlights.flights.map((flight) => (
+          {flightsData?.flights?.map((flight) => (
             <li key={flight.id}>
               {flight.airline.name} - {flight.flightNumber}
             </li>

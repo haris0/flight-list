@@ -13,7 +13,5 @@ export interface FlightsData {
       max: number;
     };
   };
-  sortOptions: {
-    [key: string]: string;
-  };
+  sortOptions: Record<string, string>;
 }
