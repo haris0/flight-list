@@ -3,6 +3,7 @@ import { getFlights } from "@/services/getFlights";
 import Header from "@/components/header/Header";
 import FlightListPage from "@/pages/flight-list/FlightList";
 import { QUERY_PARAM } from "@/constants";
+import Skeleton from "@/components/skeleton/Skeleton";
 
 type ServerSearchParams = { [key: string]: string | string[] | undefined };
 
@@ -41,7 +42,28 @@ export default async function Home({ searchParams }: {
           arival="Bali (DPS)"
           date="22 Oktober 2025"
         />
-        <Suspense fallback={<div className="p-4">Loading flights...</div>}>
+        <Suspense 
+          fallback={
+            <div className="md:flex md:flex-1 gap-4">
+              <aside className="hidden md:flex w-82 p-4 sticky top-22 h-fit flex-col gap-4">
+                <Skeleton className="w-full h-8" />
+                <Skeleton className="w-full h-8" />
+                <Skeleton className="w-full h-8" />
+                <Skeleton className="w-full h-8" />
+                <Skeleton className="w-full h-8" />
+                <Skeleton className="w-full h-8" />
+              </aside>
+              <main className="flex-1 p-4 md:mt-0 flex flex-col gap-4">
+                <Skeleton className="w-full h-6" />
+                <Skeleton className="w-full h-28" />
+                <Skeleton className="w-full h-28" />
+                <Skeleton className="w-full h-28" />
+                <Skeleton className="w-full h-28" />
+                <Skeleton className="w-full h-28" />
+              </main>
+            </div>
+          }
+        >
           <FlightList searchParams={params} />
         </Suspense>
       </div>
