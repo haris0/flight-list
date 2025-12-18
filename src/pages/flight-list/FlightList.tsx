@@ -9,11 +9,15 @@ import { useCallback, useState } from 'react';
 import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useFlights } from '@/services/useFlights';
-import { QUERY_PARAM } from '@/constants';
+import { QUERY_PARAM, SORT_TYPE } from '@/constants';
 
 
 interface FlightListPageProps {
   initialFlights: FlightsData
+}
+
+const RECOMMENDED_SORT = {
+  [SORT_TYPE.RECOMMENDED]: 'Recommended',
 }
 
 const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
@@ -37,7 +41,7 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
     max: Number(searchParams?.get(QUERY_PARAM.MAX_DURATION)) || filterAttributes.durationRange.max,
   });
   const [showSort, setShowSort] = useState(false);
-  const [selectedSortMode, setSelectedSortMode] = useState(searchParams?.get(QUERY_PARAM.SORT_BY) || '');
+  const [selectedSortMode, setSelectedSortMode] = useState(searchParams?.get(QUERY_PARAM.SORT_BY) || SORT_TYPE.RECOMMENDED);
   const [showBottomSheet, setShowBottomSheet] = useState({
     filter: false,
     sort: false,
@@ -128,8 +132,13 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
   }
 
   const handeSortOptionChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setSelectedSortMode(event.target.value);
-    handleUpdateSearch(QUERY_PARAM.SORT_BY, event.target.value);
+    const value = event.target.value;
+    setSelectedSortMode(value);
+    if (value === SORT_TYPE.RECOMMENDED) {
+      handleUpdateSearch(QUERY_PARAM.SORT_BY, undefined);
+    } else {
+      handleUpdateSearch(QUERY_PARAM.SORT_BY, value);
+    }
     setShowSort(false);
   }
 
@@ -166,7 +175,10 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
   const renderSortView = useCallback(
     () => (
       <SortView
-        sortOptions={sortOptions}
+        sortOptions={{
+          ...RECOMMENDED_SORT,
+          ...sortOptions
+        }}
         selectedSortMode={selectedSortMode}
         handeSortOptionChange={handeSortOptionChange}
       />
@@ -207,11 +219,11 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
           <span className="font-semibold">Select Flight</span>
           <div className='hidden md:block relative'>
             <button
-              className={`rounded border-b-0 cursor-pointer font-semibold flex gap-1 ${selectedSortMode && 'text-orange-500'}`}
+              className={`rounded border-b-0 cursor-pointer font-semibold flex gap-1 ${selectedSortMode !== SORT_TYPE.RECOMMENDED && 'text-orange-500'}`}
               onClick={() => setShowSort(!showSort)}
             >
               <img src='/sort-icon.svg' alt="Filter Icon" />
-              {selectedSortMode ? sortOptions[selectedSortMode] : 'Sort'}
+              {selectedSortMode !== SORT_TYPE.RECOMMENDED ? sortOptions[selectedSortMode] : 'Sort'}
             </button>
             {showSort && (
               <div className="absolute right-0 mt-2 p-2 w-50 bg-white rounded shadow-xs z-10">

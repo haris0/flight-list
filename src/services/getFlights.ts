@@ -1,14 +1,8 @@
+import { SORT_TYPE } from '@/constants';
 import { Flight } from '@/types/flight';
 import { FlightsData } from '@/types/flights-data';
 import { promises as fs } from 'fs';
 import path from 'path';
-
-export const SORT_TYPE = {
-  PRICE: 'price',
-  DURATION: 'duration',
-} as const;
-
-type SORT_TYPE = typeof SORT_TYPE[keyof typeof SORT_TYPE];
 
 interface GetFlightsParams {
   airlineCodes?: string[],

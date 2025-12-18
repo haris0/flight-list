@@ -8,3 +8,9 @@ export const QUERY_PARAM = {
   MAX_DURATION: 'maxDuration',
   SORT_BY: 'sortBy',
 };
+
+export const SORT_TYPE = {
+  RECOMMENDED: 'recommended',
+  PRICE: 'price',
+  DURATION: 'duration',
+};

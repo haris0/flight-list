@@ -1,7 +1,5 @@
 interface SortViewProps {
-  sortOptions: {
-    [key: string]: string;
-  };
+  sortOptions: Record<string, string>;
   selectedSortMode: string;
   handeSortOptionChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
 }
