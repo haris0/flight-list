@@ -13,13 +13,16 @@ interface FlightListPageProps {
 
 const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
   const { filterAttributes, sortOptions } = initialFlights;
+
+  const [airlines, setAirlines] = useState<string[]>([]);
   const [priceRange, setPriceRange] = useState(filterAttributes.priceRange);
   const [durationRange, setDurationRange] = useState(filterAttributes.durationRange);
-  const [airlines, setAirlines] = useState<string[]>([]);
   const [showSort, setShowSort] = useState(false);
   const [selectedSortMode, setSelectedSortMode] = useState('');
-  const [showFilterBottomSheet, setShowFilterBottomSheet] = useState(false);
-  const [showSortBottomSheet, setShowSortBottomSheet] = useState(false);
+  const [showBottomSheet, setShowBottomSheet] = useState({
+    filter: false,
+    sort: false,
+  });
 
   const handleSelectAllAirlines = () => {
     const allAirlineCodes = filterAttributes.airlines.map((airline) => airline.code);
@@ -106,14 +109,14 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
       <aside className="sticky md:hidden flex justify-around items-center w-full p-4 top-18 shadow-xs -mt-10 rounded-t-2xl bg-[#f3f4f6] z-20">
         <button
           className={`flex gap-1 cursor-pointer ${isFilterActive && 'text-orange-500'}`}
-          onClick={() => setShowFilterBottomSheet(true)}
+          onClick={() => setShowBottomSheet((prev) => ({ ...prev, filter: true }))}
         >
           <img src='/filter-icon.svg' width={20} height={20} alt="Filter Icon" />
           Filter
         </button>
         <button
           className={`flex gap-1 cursor-pointer ${selectedSortMode && 'text-orange-500'}`}
-          onClick={() => setShowSortBottomSheet(true)}
+          onClick={() => setShowBottomSheet((prev) => ({ ...prev, sort: true }))}
         >
           <img src='/sort-icon.svg' width={20} height={20} alt="Filter Icon" />
           Sort
@@ -145,10 +148,16 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
           ))}
         </ul>
       </main>
-      <BottomSheet open={showFilterBottomSheet} onClose={() => setShowFilterBottomSheet(false)}>
+      <BottomSheet 
+        open={showBottomSheet.filter} 
+        onClose={() => setShowBottomSheet((prev) => ({ ...prev, filter: false }))}
+      >
         {renderFilterView()}
       </BottomSheet>
-      <BottomSheet open={showSortBottomSheet} onClose={() => setShowSortBottomSheet(false)}>
+      <BottomSheet 
+        open={showBottomSheet.sort} 
+        onClose={() => setShowBottomSheet((prev) => ({ ...prev, sort: false }))}
+      >
         {renderSortView()}
       </BottomSheet>
     </div>

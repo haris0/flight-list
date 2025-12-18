@@ -16,7 +16,7 @@ const BottomSheet = ({ title, open, onClose, children }: PropsWithChildren<Botto
         onClick={onClose}
       />
       <div
-        className="relative w-full max-w-md min-h-30 bg-white rounded-t-2xl shadow-lg animate-slideUp z-10"
+        className="relative w-full max-w-6xl min-h-30 bg-white rounded-t-2xl shadow-lg animate-slideUp z-10"
         onClick={e => e.stopPropagation()}
       >
         <div className={`flex px-5 pt-5 items-center ${title ? 'justify-between' : 'justify-end'}`}>
