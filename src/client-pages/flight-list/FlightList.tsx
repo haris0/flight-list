@@ -10,7 +10,9 @@ import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useFlights } from '@/services/useFlights';
 import { QUERY_PARAM, SORT_TYPE } from '@/constants';
-import FlightCard from '@/components/flight-card/FlightCard';
+import dynamic from 'next/dynamic';
+
+const FlightCard = dynamic(() => import('@/components/flight-card/FlightCard'));
 
 
 interface FlightListPageProps {
@@ -232,9 +234,13 @@ const FlightListPage = ({ initialFlights }: FlightListPageProps) => {
           </div>
         </div>
         <div className='flex flex-col gap-3 mt-4'>
-          {flightsData?.flights?.map((flight) => (
+          {(flightsData?.flights.length || 0) > 0 ? flightsData?.flights?.map((flight) => (
             <FlightCard key={flight.id} {...flight} />
-          ))}
+          )) : (
+            <div className="text-center text-gray-500">
+              No flights found
+            </div>
+          )}
         </div>
       </main>
       <BottomSheet 
