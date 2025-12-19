@@ -78,7 +78,7 @@ src/
 - Mobile Filter Drawer.
 - Improvements with More Time, Further improve the UI/UX of the flight detail page.
 
-## Dependencies Used:
+## Dependencies:
 <details>
   <summary>Detail</summary>
   
