@@ -16,7 +16,7 @@ const FlightList = async ({ searchParams } : { searchParams: ServerSearchParams}
   const sortBy = searchParams?.[QUERY_PARAM.SORT_BY] as string || undefined;
 
   const datas = await getFlights({
-    airlineCodes: Array.isArray(airlineCodes) ? airlineCodes : [airlineCodes || ''],
+    airlineCodes: airlineCodes ? Array.isArray(airlineCodes) ? airlineCodes : [airlineCodes] : [],
     minPrice,
     maxPrice,
     minDuration,
@@ -55,11 +55,11 @@ export default async function Home({ searchParams }: {
               </aside>
               <main className="flex-1 p-4 md:mt-0 flex flex-col gap-4">
                 <Skeleton className="w-full h-6" />
-                <Skeleton className="w-full h-28" />
-                <Skeleton className="w-full h-28" />
-                <Skeleton className="w-full h-28" />
-                <Skeleton className="w-full h-28" />
-                <Skeleton className="w-full h-28" />
+                <Skeleton className="w-full h-28 rounded-xl" />
+                <Skeleton className="w-full h-28 rounded-xl" />
+                <Skeleton className="w-full h-28 rounded-xl" />
+                <Skeleton className="w-full h-28 rounded-xl" />
+                <Skeleton className="w-full h-28 rounded-xl" />
               </main>
             </div>
           }

@@ -37,7 +37,7 @@ const FlightCard = ({
   return (
     <div className="p-3 bg-white rounded-xl border border-transparent hover:border-blue-950 shadow-xs">
       <div className="flex justify-between gap-2">
-        <div className="w-fit md:w-1/4 flex items-center gap-3 min-w-0">
+        <div className="w-fit flex items-center gap-3 min-w-0">
           <img 
             src={`${AIRLINE_LOGO_BASE_URL}${airline.code}.png`} 
             alt={airline.name} 
@@ -140,7 +140,6 @@ const FlightCard = ({
                   </div>
                 </div>
               </div>
-
               <div className="flex flex-col items-start gap-0.5 w-full">
                 <p className="text-lg font-medium text-gray-950">{DUMMY_AIRPORT_DATA[arrival.airport].city} - {arrival.airport}</p>
                 <p className="text-sm text-gray-600">{DUMMY_AIRPORT_DATA[arrival.airport].airportName}</p>
