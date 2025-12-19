@@ -96,7 +96,7 @@ src/
 
   ### Approximate time spent on each part:
   - Planning, init project, and slicing layout: 1 Hours
-  - ⁠Setup get flight data from json file and implement filter sort logic: 2 Hours
+  - ⁠Setup get flight data from json file and implement filter adn sort logic: 2 Hours
   - ⁠Slicing responsive filter and Sort view: 1 Hours
   - ⁠Implement filter and sort fetch, include store in query param and debouncing: 2  Hours
   - ⁠Slicing responsive flight card include detail flight, and skeleton: 1 Hours
