@@ -36,31 +36,29 @@ const FlightCard = ({
 
   return (
     <div className="p-3 bg-white rounded-xl border border-transparent hover:border-blue-950 shadow-xs">
-      <div className="flex justify-between">
-        <div className="w-24">
-          <div className='flex items-center gap-3'>
-            <img 
-              src={`${AIRLINE_LOGO_BASE_URL}${airline.code}.png`} 
-              alt={airline.name} 
-              className='w-6'
-            />
-            <label className="leading-4">
-              <span className="truncate inline-block align-bottom">
-                {airline.name}
-              </span>
-              <span className="text-gray-400 text-xs"> ({airline.code})</span>
-            </label>
-          </div>
-          <div className='flex items-center mt-2'>
-            <img 
-              src={'/baggage-icon.svg'} 
-              alt='baggage'
-              className='w-4 mr-1'
-            />
-            <span className="text-xs text-gray-400">
-              {baggage}
+      <div className="flex justify-between gap-2">
+        <div className="w-fit md:w-1/4 flex items-center gap-3 min-w-0">
+          <img 
+            src={`${AIRLINE_LOGO_BASE_URL}${airline.code}.png`} 
+            alt={airline.name} 
+            className='w-6 shrink-0'
+          />
+          <label className="leading-4 flex-1 min-w-0">
+            <span className="truncate block align-bottom" title={airline.name}>
+              {airline.name}
             </span>
-          </div>
+            <span className="text-gray-400 text-xs"> ({airline.code})</span>
+            <div className='flex items-center mt-1'>
+              <img 
+                src={'/baggage-icon.svg'} 
+                alt='baggage'
+                className='w-4 mr-1'
+              />
+              <span className="text-xs text-gray-400">
+                {baggage}
+              </span>
+            </div>
+          </label>
         </div>
         <div className="hidden lg:block">
           {renderDuration()}
