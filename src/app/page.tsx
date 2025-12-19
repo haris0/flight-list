@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import { getFlights } from "@/services/getFlights";
 import Header from "@/components/header/Header";
-import FlightListPage from "@/pages/flight-list/FlightList";
+import FlightListPage from "@/client-pages/flight-list/FlightList";
 import { QUERY_PARAM } from "@/constants";
 import Skeleton from "@/components/skeleton/Skeleton";
 
