@@ -39,7 +39,7 @@ export default async function Home({ searchParams }: {
       <div className="w-full max-w-6xl flex flex-col flex-1">
         <Header
           departure="Jakarta (CGK)"
-          arival="Bali (DPS)"
+          arival="Denpasar (DPS)"
           date="22 Oktober 2025"
         />
         <Suspense 
